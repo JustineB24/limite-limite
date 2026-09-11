@@ -1,0 +1,4 @@
+/vendor/
+/data_db/
+/coverage/
+.phpunit.result.cache

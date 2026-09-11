@@ -1,0 +1,47 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - develop
+            - prod
+    pull_request:
+        branches:
+            - develop
+            - prod
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7
+
+            - name: Configuration PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.2"
+                  extensions: curl, mbstring, xml, zip, pdo, pdo_mysql, xdebug
+                  coverage: xdebug
+                  tools: composer:v2
+
+            - name: Installer des dépendances
+              run: composer install --no-progress --prefer-dist --no-interaction
+
+            - name: Auditer les dépendances
+              run: composer audit
+
+            - name: Vérification qualité du code
+              run: ./vendor/bin/phpcs --standard=PSR12 src tests
+
+            - name: Execution des tests PHPUnit
+              run: ./vendor/bin/phpunit --coverage-clover coverage/clover.xml
+
+            - name: Sauvegarde de l'artefact
+              uses: actions/upload-artifact@v7
+              if: always()
+              with:
+                  name: artefact-php
+                  path: coverage
+                  retention-days: 5

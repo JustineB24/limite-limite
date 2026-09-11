@@ -1,0 +1,32 @@
+services:
+  # Service PHP
+  php:
+    container_name: php-limite-limite
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/vendor
+
+  # Service MySQL
+  mysql:
+    container_name: mysql-limite-limite
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: limite_db
+      MYSQL_USER: limite_user
+      MYSQL_PASSWORD: limite_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./data_db.sql:/docker-entrypoint-initdb.d/init.sql
+
+# Déclaration du volume pour persister les données MySQL
+volumes:
+  mysql_data:
