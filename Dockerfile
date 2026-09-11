@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Dépendance système et extension PHP curl
 RUN apk add --no-cache curl-dev \
-    && docker-php-ext-install curl
+    && docker-php-ext-install curl pdo pdo_mysql
 
 # Récupération binaire de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
