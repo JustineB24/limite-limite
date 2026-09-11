@@ -1,0 +1,49 @@
+name: Déploiement
+
+on:
+    workflow_run:
+        workflows:
+            - CI
+        types:
+            - completed
+        branches:
+            - develop
+            - prod
+jobs:
+    dev:
+        runs-on: ubuntu-latest
+        environment: develop
+        steps:
+            - name: Déploiement sur l'evironnement de dev
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      if [ -d ~/devapp/.git ]; then
+                         cd ~/devapp
+                         git pull
+                      else
+                         git clone ${{ github.server_url}}/${{ github.repository }} ~/devapp
+                      fi
+    production:
+        needs: dev
+        runs-on: ubuntu-latest
+        environment: prod
+        steps:
+            - name: Deploiment sur l'environnement de prod
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      if [ -d ~/prodapp/.git ]; then
+                         cd ~/prodapp
+                         git pull
+                      else
+                         git clone ${{ github.server_url}}/${{ github.repository }} ~/prodapp
+                      fi

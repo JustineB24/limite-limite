@@ -6,14 +6,18 @@ use App\Models\Database;
 
 class LimiteLimite
 {
-    public function getLimiteLimite(): string
+    private Database $database;
+
+    public function __construct(?Database $database = null)
     {
-        $database = new Database();
-        $debut = $database->getQuestion();
-        $fin = $database->getReponse();
-        $phrase = $debut . " " . $fin;
-        return $phrase;
+        $this->database = $database ?? new Database();
     }
 
-    public function __construct() {}
+    public function getLimiteLimite(): array
+    {
+        return [
+            'question' => $this->database->getQuestion(),
+            'reponse' => $this->database->getReponse(),
+        ];
+    }
 }
