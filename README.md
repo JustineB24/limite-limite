@@ -1,6 +1,6 @@
-[![Déploiement](https://github.com/JustineB24/limite-limite/actions/workflows/cd.yml/badge.svg)](https://github.com/JustineB24/limite-limite/actions/workflows/cd.yml)
+[![cd](https://github.com/JustineB24/limite-limite/actions/workflows/cd.yml/badge.svg)](https://github.com/JustineB24/limite-limite/actions/workflows/cd.yml)
 
-[![CI](https://github.com/JustineB24/limite-limite/actions/workflows/ci.yml/badge.svg)](https://github.com/JustineB24/limite-limite/actions/workflows/ci.yml)
+[![ci](https://github.com/JustineB24/limite-limite/actions/workflows/ci.yml/badge.svg)](https://github.com/JustineB24/limite-limite/actions/workflows/ci.yml)
 
 # Limite Limite - API
 
