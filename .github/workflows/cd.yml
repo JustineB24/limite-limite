@@ -1,9 +1,8 @@
-name: Déploiement
-
+name: cd
 on:
     workflow_run:
         workflows:
-            - CI
+            - ci
         types:
             - completed
         branches:
