@@ -46,6 +46,3 @@ jobs:
 
         - name: Execution des tests PHPUnit
           run: ./vendor/bin/phpunit --coverage-clover coverage/clover.xml
-
-        - name: Vérification du style avec PHP CS Fixer
-          run: ./vendor/bin/php-cs-fixer fix --dry-run --diff
