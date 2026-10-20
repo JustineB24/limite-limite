@@ -18,6 +18,12 @@ L'application expose un point d'entrée HTTP générant de manière aléatoire d
 * **Base de données** : MySQL 8.0 gérant le stockage des cartes questions et réponses.
 * **Architecture applicative** : Injection de dépendances dans le contrôleur `LimiteLimite` facilitant l'isolation et les tests unitaires via des mocks.
 
+### Exemple de réponse
+
+Une fois les conteneurs lancés (`docker compose up -d --build`), l'API est accessible sur [http://localhost:3000](http://localhost:3000) :
+
+![Exemple de réponse de l'API](image.png)
+
 ---
 
 ## 🛠 Outils & Standards de développement

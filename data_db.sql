@@ -1,3 +1,7 @@
+-- Encodage de la session : sans cette ligne, MySQL lit ce script en latin1
+-- à l'initialisation et les accents arrivent cassés en base (« dÃ©cidÃ© »).
+SET NAMES utf8mb4;
+
 -- Création de la table des questions (Cartes Noires)
 CREATE TABLE IF NOT EXISTS `questions` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
