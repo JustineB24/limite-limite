@@ -1,57 +1,41 @@
-[![cd](https://github.com/JustineB24/limite-limite/actions/workflows/cd.yml/badge.svg)](https://github.com/JustineB24/limite-limite/actions/workflows/cd.yml)
-
-[![ci](https://github.com/JustineB24/limite-limite/actions/workflows/ci.yml/badge.svg)](https://github.com/JustineB24/limite-limite/actions/workflows/ci.yml)
+[![ci](https://github.com/JustineB24/limite-limite/actions/workflows/ci.yml/badge.svg)](https://github.com/JustineB24/limite-limite/actions/workflows/ci.yml) [![cd](https://github.com/JustineB24/limite-limite/actions/workflows/cd.yml/badge.svg)](https://github.com/JustineB24/limite-limite/actions/workflows/cd.yml)
 
 # Limite Limite - API
 
-Projet réalisé par **Justine B.** et **Thibaut G.**
+Exercice de cours réalisé en binôme par **Justine B.** et **Thibaut G.**
 
-API PHP 8.2 connectée à une base de données relationnelle MySQL, entièrement conteneurisée avec Docker et intégrée dans une chaîne d'automatisation CI/CD via GitHub Actions.
+Une API en PHP 8.2 qui tire au hasard une question à trou et une réponse du jeu Limite Limite, et les
+renvoie en JSON. Les cartes sont stockées dans MySQL, le tout tourne dans Docker, et GitHub Actions
+teste puis déploie le code à chaque push.
 
----
+## Exemple de réponse
 
-## 📌 Présentation du projet
+```bash
+docker compose up -d --build
+```
 
-L'application expose un point d'entrée HTTP générant de manière aléatoire des associations de cartes (une question à trou et une réponse humoristique) au format JSON.
-
-* **Backend** : PHP 8.2 en architecture MVC légère orientée objet.
-* **Base de données** : MySQL 8.0 gérant le stockage des cartes questions et réponses.
-* **Architecture applicative** : Injection de dépendances dans le contrôleur `LimiteLimite` facilitant l'isolation et les tests unitaires via des mocks.
-
-### Exemple de réponse
-
-Une fois les conteneurs lancés (`docker compose up -d --build`), l'API est accessible sur [http://localhost:3000](http://localhost:3000) :
+L'API répond ensuite sur [http://localhost:3000](http://localhost:3000) :
 
 ![Exemple de réponse de l'API](image.png)
 
----
+## Le code
 
-## 🛠 Outils & Standards de développement
+- **PHP 8.2** en MVC léger, chargé par l'autoload PSR-4 de Composer.
+- **MySQL 8.0** pour les cartes questions et réponses, initialisée par `data_db.sql`.
+- Le contrôleur `LimiteLimite` reçoit ses dépendances par injection, ce qui permet de le tester avec des
+  mocks.
+- **PHPUnit 11** pour les tests, **PHP_CodeSniffer** pour vérifier le standard PSR-12.
 
-* **Conteneurisation** : Gestion des services `php` et `mysql` via Docker Compose avec montage de volumes applicatifs.
-* **Gestion des dépendances** : Composer 2 pour la gestion des paquets de développement.
-* **Qualité de code** : Respect strict du standard de programmation PSR-12 vérifié avec PHP_CodeSniffer.
-* **Tests unitaires** : Suite de tests automatisée avec PHPUnit 11 validant la structure des données et l'intégrité des retours API.
+## CI/CD avec GitHub Actions
 
----
+Deux workflows, sur les branches `develop` et `prod`.
 
-## 🔄 Pipeline CI/CD (GitHub Actions)
+**ci**, à chaque push ou pull request :
 
-L'automatisation repose sur deux workflows distincts gérant le cycle de vie du code :
+1. installe PHP 8.2 et les dépendances Composer, avec cache
+2. vérifie les failles connues des dépendances (`composer audit`)
+3. contrôle le style PSR-12 (`phpcs`)
+4. lance les tests (`phpunit`)
 
-### 1. Intégration Continue (CI)
-
-Déclenchée à chaque modification (`push` ou `pull_request`) sur les branches `develop` et `prod` :
-
-* Mise en place de l'environnement d'exécution PHP 8.2 et du cache Composer.
-* Audit de sécurité automatisé des dépendances (`composer audit`).
-* Analyse statique de conformité PSR-12 (`phpcs`).
-* Exécution des tests unitaires (`phpunit`).
-
-### 2. Déploiement Continu (CD)
-
-Exécuté automatiquement en cas de succès du pipeline CI :
-
-* **Environnement `develop`** : Déploiement SSH sur le VPS dans le répertoire cible `~/devapp` avec synchronisation de la branche `develop`.
-* **Environnement `prod`** : Déploiement SSH sur le VPS dans le répertoire cible `~/prodapp` avec synchronisation de la branche `prod`.
-* Reconstruction et redémarrage automatique des conteneurs applicatifs sur le serveur via `docker compose up -d --build`.
+**cd**, quand `ci` est terminé : se connecte en SSH au VPS et met à jour le code dans `~/devapp`, puis
+dans `~/prodapp` (`git pull`, ou `git clone` au premier passage).
